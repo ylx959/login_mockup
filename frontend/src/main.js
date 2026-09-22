@@ -1,3 +1,5 @@
+import "./style.css";
+
 // TODO: 接 /api/auth/login
 const form = document.getElementById("login-form");
 
