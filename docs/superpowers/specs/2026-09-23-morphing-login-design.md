@@ -6,7 +6,7 @@
 
 Build a small, production-minded authentication frontend for the existing FastAPI project. The experience begins as a single centered `SIGN IN/UP` pill, morphs into a switchable sign-in/sign-up form, and expands into a full-page black welcome canvas after authentication. The visual language is restrained Apple-like glass paired with asymmetric MoMA-style typography.
 
-The work also includes the smallest backend correction needed to make the approved frontend contract coherent.
+The existing corrected backend contract is treated as stable. Frontend code adapts to it; no database, session, security, or route refactor is included unless integration testing exposes a strictly necessary compatibility defect.
 
 ## Scope
 
@@ -21,7 +21,7 @@ The work also includes the smallest backend correction needed to make the approv
 - A top-right Dynamic Island-style logout capsule so the authentication cycle can be exercised repeatedly.
 - Responsive behavior down to a 375px viewport and landscape layouts.
 - Reduced-motion, keyboard, screen-reader, password-manager, and paste support.
-- Minimal repair of the FastAPI authentication contract and database-table mismatch.
+- Read-only verification of the FastAPI authentication contract already present in the worktree.
 
 ### Excluded
 
@@ -138,7 +138,7 @@ FastAPI exposes one coherent `/api/member` interface:
 - `GET /api/member/auth` returns the current session as `{ ok, member? }`.
 - `DELETE /api/member/auth` clears the session and returns `{ ok: true }`.
 
-Both sign-up and sign-in use the `users` table. The login request does not require a name. Password hashing and verification stay behind the backend authentication module's interface. Duplicate email, invalid credentials, and invalid input are distinct observable error modes without revealing whether an email exists during sign-in.
+Both sign-up and sign-in use the `users` table. The login request does not require a name. A successful request stores only the member ID in the signed session; member name and email are loaded from the database when the session is read. Password hashing, verification, and cookie structure stay behind the backend authentication module's interface. Duplicate email, invalid credentials, and invalid input are distinct observable error modes without revealing whether an email exists during sign-in.
 
 ### Frontend authentication adapter
 
@@ -204,6 +204,7 @@ This shape gives callers leverage through three deep modules and keeps database,
 ## Implementation Constraints
 
 - Preserve unrelated user changes already present in the worktree.
+- Keep backend application code unchanged unless a failing integration test demonstrates a required compatibility fix; any such fix must remain narrowly scoped.
 - Do not add React, Tailwind, GSAP, Framer Motion, or an icon package.
 - Use semantic design tokens rather than raw colors inside individual selectors.
 - Use no emoji and no decorative image dependency.
