@@ -12,4 +12,4 @@ pip install -qr "$_here/requirements.txt" --disable-pip-version-check
 
 set -euo pipefail
 cd "$_here"
-exec uvicorn app.main:app --host 127.0.0.1 --port "${PORT:-8000}" --reload
+exec uvicorn app.main:app --host 127.0.0.1 --port "${PORT:-9000}" --reload
