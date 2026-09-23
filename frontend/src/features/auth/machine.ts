@@ -9,7 +9,7 @@
  * 先前那個請求回來時不該把畫面拉回去。
  */
 
-import type { AuthErrorCode, Member } from "@/modules/auth/types";
+import type { AuthErrorCode, Member } from "@/features/auth/types";
 
 export type AuthMode = "signIn" | "signUp";
 export type AuthPhase = "booting" | "collapsed" | "form" | "welcome";

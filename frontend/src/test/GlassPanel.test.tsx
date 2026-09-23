@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { GlassPanel } from "@/components/GlassPanel/GlassPanel";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 
 describe("glass panel", () => {
   it("dismisses on a press outside the panel, not inside", async () => {

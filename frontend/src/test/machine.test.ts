@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { initialAuthState, isBusy, reduceAuth, type AuthState } from "@/modules/auth/auth-machine";
+import { initialAuthState, isBusy, reduceAuth, type AuthState } from "@/features/auth/machine";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
 const form = (over: Partial<AuthState> = {}): AuthState => ({

@@ -1,7 +1,7 @@
-import { PillButton } from "@/components/PillButton/PillButton";
+import { PillButton } from "@/components/ui/PillButton";
 import { errorCopy, signingOutLabel, signOutLabel, welcomeGreeting } from "@/data/copy";
-import type { AuthState } from "@/modules/auth/auth-machine";
-import type { AuthActions } from "@/modules/auth/use-auth";
+import type { AuthState } from "@/features/auth/machine";
+import type { AuthActions } from "@/features/auth/hooks";
 
 import styles from "@/styles/WelcomeCard.module.css";
 

@@ -14,7 +14,7 @@
   position: absolute;
   /* 放大一圈，緩慢推近時邊緣不會露出來 */
   inset: -4%;
-  background-image: url("src/assets/room.jpg");
+  background-image: url("@/assets/images/room.jpg");
   background-size: cover;
   background-position: center;
   will-change: transform;

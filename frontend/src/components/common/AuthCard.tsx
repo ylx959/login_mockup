@@ -6,13 +6,13 @@ import {
 } from "motion/react";
 import { useState } from "react";
 
-import { Field } from "@/components/Field/Field";
-import { PillButton } from "@/components/PillButton/PillButton";
-import { SubmitButton } from "@/components/SubmitButton/SubmitButton";
+import { Field } from "@/components/ui/Field";
+import { PillButton } from "@/components/ui/PillButton";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { brand, errorCopy, modeCopy } from "@/data/copy";
 import { fieldsFor, type FieldName } from "@/data/fields";
-import type { AuthMode, AuthState } from "@/modules/auth/auth-machine";
-import type { AuthActions } from "@/modules/auth/use-auth";
+import type { AuthMode, AuthState } from "@/features/auth/machine";
+import type { AuthActions } from "@/features/auth/hooks";
 import {
   contentRevealVariants,
   contentSpring,
@@ -20,7 +20,7 @@ import {
   shellSpring,
   textVariants,
 } from "@/lib/motion";
-import { hasErrors, validate, type FieldErrors } from "@/modules/auth/validate";
+import { hasErrors, validate, type FieldErrors } from "@/features/auth/validate";
 
 import styles from "@/styles/AuthCard.module.css";
 

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "@/App";
 import * as motionConfig from "@/lib/motion";
-import type { AuthClient } from "@/modules/auth/auth-client";
+import type { AuthClient } from "@/features/auth/api";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
 

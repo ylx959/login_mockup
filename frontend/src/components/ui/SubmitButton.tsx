@@ -1,4 +1,4 @@
-import { Icon } from "@/components/Icon/Icon";
+import { Icon } from "@/components/ui/Icon";
 
 import styles from "@/styles/SubmitButton.module.css";
 

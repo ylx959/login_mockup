@@ -6,8 +6,8 @@
 import { validationCopy } from "@/data/copy";
 import type { FieldName } from "@/data/fields";
 
-import type { AuthMode } from "@/modules/auth/auth-machine";
-import type { Registration } from "@/modules/auth/types";
+import type { AuthMode } from "@/features/auth/machine";
+import type { Registration } from "@/features/auth/types";
 
 export type FieldErrors = Partial<Record<FieldName, string>>;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hasErrors, validate } from "@/modules/auth/validate";
+import { hasErrors, validate } from "@/features/auth/validate";
 
 const valid = { name: "Annie Lin", email: "annie@example.com", password: "correct-horse" };
 

@@ -1,4 +1,4 @@
-import { Icon } from "@/components/Icon/Icon";
+import { Icon } from "@/components/ui/Icon";
 import type { FieldSpec } from "@/data/fields";
 
 import styles from "@/styles/Field.module.css";

@@ -137,7 +137,7 @@ All springs and variants live in `frontend/src/lib/motion.ts`.
 | `contentRevealVariants` | The form opening outward from its exact centre |
 | `screenVariants` | The fade hand-off between the login screen and the member page |
 
-Colours and glass effects are semantic tokens in `frontend/src/styles/tokens.css`. The backdrop photo is `frontend/src/assets/room.jpg`.
+Colours and glass effects are semantic tokens in `frontend/src/styles/globals.css`. The backdrop photo is `frontend/src/assets/images/room.jpg`.
 
 ## API
 
@@ -160,24 +160,36 @@ backend/
   tests/                       Contract tests against an isolated login_mockup_test database
 
 frontend/src/
-  lib/http.ts                  The only place that knows how fetch is configured
-  lib/motion.ts                Every spring and variant
-  modules/auth/
+  App.tsx                      Wires useAuth to the router and keeps the URL in sync with the auth phase
+  router/index.tsx             Routes: / → Login, /member → Member
+  pages/
+    Login/Login.tsx            Pill ⇄ glass card screen
+    Member/Member.tsx          Welcome screen
+  components/
+    ui/                        Base building blocks: Icon, Field, PillButton, SubmitButton, GlassPanel
+    layout/                    Backdrop and Screen (the page enter/exit wrapper)
+    common/                    AuthCard, TouchPill, WelcomeCard
+  features/auth/
     types.ts                   Member, error codes, request/result types
-    auth-client.ts             The only adapter that knows about /api/member
-    auth-machine.ts            Pure state transitions; blocks late responses
+    api.ts                     The only adapter that knows about /api/member
+    machine.ts                 Pure state transitions; blocks late responses
     validate.ts                Pure validation, rules aligned with the backend
-    use-auth.ts                The one auth interface components need
-  data/                        Copy and field specs
-  components/                  One folder per component, each with its own CSS Module
-  styles/tokens.css            Semantic tokens for the dark glass look
+    hooks.ts                   useAuth, the one auth interface components need
+  data/                        Copy and field specs you can edit directly
+  services/http.ts             The only place that knows how fetch is configured
+  lib/motion.ts                Every spring and variant
+  styles/
+    globals.css                Semantic tokens and base styles for the dark glass look
+    *.module.css               One CSS Module per component
+  assets/images/               Backdrop photo
+  test/                        All *.test.ts(x) files plus the Vitest setup
 ```
 
-- **State Machine** — `booting → collapsed ⇄ form (log in ↔ sign up) → welcome`, and signing out returns to `collapsed`. Every legal transition lives in `auth-machine.ts`, which never touches the DOM or the network.
+- **State Machine** — `booting → collapsed ⇄ form (log in ↔ sign up) → welcome`, and signing out returns to `collapsed`. Every legal transition lives in `features/auth/machine.ts`, which never touches the DOM or the network.
 - **One Hook** — `useAuth` hides the state machine, the HTTP adapter, request ordering and the late-response guard. Components only see `state` and a handful of actions.
 - **Injected Client** — Tests swap in a fake `AuthClient`, so the whole app runs without a network.
 
 ## License
 Released under the [MIT License](LICENSE). © 2026 YLX Studio.
 
-The MIT License covers the code only. The backdrop photo `frontend/src/assets/room.jpg` comes from [Dezeen — Daddy Cool by Pattern Studio](https://www.dezeen.com/2025/02/21/daddy-cool-sydney-home-renovation-pattern-studio/); its rights stay with the original owners.
+The MIT License covers the code only. The backdrop photo `frontend/src/assets/images/room.jpg` comes from [Dezeen — Daddy Cool by Pattern Studio](https://www.dezeen.com/2025/02/21/daddy-cool-sydney-home-renovation-pattern-studio/); its rights stay with the original owners.
