@@ -10,7 +10,7 @@ con=mysql.connector.connect(
 
 print("Database Ready")
 
-from fastapi import FastAPI, Request,Body
+from fastapi import FastAPI, Request,Body,Response,status
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 import json
@@ -22,6 +22,11 @@ app.add_middleware(SessionMiddleware,secret_key="grgergg2")
 
 password_hash = PasswordHash.recommended()
 
+#連線閒置太久會被 MySQL 斷掉，每次查詢前先確認
+def cursor():
+    con.ping(reconnect=True)
+    return con.cursor(dictionary=True)#用欄位名取值，表格欄位順序改了也不會錯
+
 class SignupRequest(BaseModel):
 
     name: str = Field(min_length=2, max_length=50)
@@ -30,10 +35,16 @@ class SignupRequest(BaseModel):
 
     password: str = Field(min_length=8, max_length=128)
 
+#登入不需要 name，所以跟註冊分開
+class LoginRequest(BaseModel):
+
+    email: EmailStr
+
+    password: str = Field(min_length=1, max_length=128)
 
 
 @app.post("/api/member")
-def signup(body: SignupRequest):
+def signup(request:Request,response:Response,body: SignupRequest):
 
     name = body.name.strip()
 
@@ -42,66 +53,61 @@ def signup(body: SignupRequest):
     password = body.password
 
     hashed_password = password_hash.hash(password)
-    
-    cursor=con.cursor()
-    cursor.execute("Select * from users where email=%s",[email])
-    result=cursor.fetchone()
+
+    cur=cursor()
+    cur.execute("Select * from users where email=%s",[email])
+    result=cur.fetchone()
 
     if result==None:
-        cursor.execute("INSERT INTO users(name,email,password_hash) VALUES (%s,%s,%s)",[name,email,hashed_password])
+        cur.execute("INSERT INTO users(name,email,password_hash) VALUES (%s,%s,%s)",[name,email,hashed_password])
         con.commit()
-        return {"ok":True}
+        #註冊完直接登入，重新整理才不會掉回未登入
+        request.session["member"]={"name":name,"email":email}
+        response.status_code=status.HTTP_201_CREATED
+        return {"ok":True,"member":request.session["member"],"error":None}
     else:#代表email 重複
-        return  {"ok":False}
+        response.status_code=status.HTTP_409_CONFLICT
+        return {"ok":False,"member":None,"error":"email_taken"}
 
 #登入帳號的api
 @app.put("/api/member/auth")
-def login(request:Request,body: SignupRequest):
+def login(request:Request,response:Response,body: LoginRequest):
 
     email = body.email.lower()
     password = body.password
 
-    cursor=con.cursor()
+    cur=cursor()
     #先只用 email 找使用者
-    cursor.execute(
+    cur.execute(
         "SELECT * FROM users WHERE email=%s",
         [email]
     )
 
-    result=cursor.fetchone()
+    result=cur.fetchone()
 
-    if result==None:
+    #查無此人跟密碼錯誤回一模一樣的結果，不讓人試出哪些 email 註冊過
+    if result==None or not password_hash.verify(password,result["password_hash"]):
         request.session["member"]=None
-        return {"ok":False}
-
-    stored_hash=result[3]
-
-    # 驗證密碼
-    if not password_hash.verify(password,stored_hash):
-        request.session["member"]=None
-        return {"ok":False}
+        response.status_code=status.HTTP_401_UNAUTHORIZED
+        return {"ok":False,"member":None,"error":"invalid_credentials"}
 
     request.session["member"]={
-        "name":result[1],
-        "email":result[2]
+        "name":result["name"],
+        "email":result["email"]
     }
 
-    return {"ok":True}
+    return {"ok":True,"member":request.session["member"],"error":None}
 
 #檢查登入狀態的api
 @app.get("/api/member/auth")
 def checkstatus(request:Request):
     if "member" in request.session and request.session["member"]!=None:
-        member=request.session["member"]
-        return {"ok":True,"name":member["name"],"email":member["email"]}
+        return {"ok":True,"member":request.session["member"],"error":None}
     else:
-        return {"ok":False}
+        return {"ok":False,"member":None,"error":None}
 
 #登出
 @app.delete("/api/member/auth")
 def logout(request:Request):
     request.session["member"]=None
-    return {"ok":True}
-    
-
-
+    return {"ok":True,"member":None,"error":None}

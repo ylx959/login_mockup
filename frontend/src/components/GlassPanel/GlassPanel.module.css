@@ -1,0 +1,22 @@
+.panel {
+  position: relative;
+  z-index: 1;
+  width: min(420px, calc(100vw - 32px));
+  padding: clamp(26px, 5.5vw, 34px);
+  border-radius: var(--glass-radius);
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  /* 邊緣只有一條極淡的內描高光，不是外框 */
+  outline: 1px solid var(--glass-hairline);
+  outline-offset: -1px;
+  animation: rise 420ms var(--ease-out) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+}

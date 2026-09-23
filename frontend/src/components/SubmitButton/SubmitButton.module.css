@@ -1,0 +1,45 @@
+/* 參考圖裡的大圓形送出鍵。深色 UI 反過來做成亮色，成為卡片上唯一的強焦點 */
+.submit {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--chip-fill);
+  color: var(--chip-ink);
+  transition:
+    transform 140ms var(--ease-out),
+    background-color 200ms var(--ease-out);
+}
+
+.submit:hover:not(:disabled) {
+  background: #ffffff;
+  transform: scale(1.04);
+}
+
+.submit:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.submit:disabled {
+  cursor: progress;
+}
+
+/* 送出中：圓形本身變成進度環，寬高不變所以版面不跳動 */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: spin 760ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

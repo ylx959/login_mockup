@@ -1,0 +1,65 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    background-color 200ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+
+.pill:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.pill:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* 亮色實心：卡片上最強的次要動作 */
+.solid {
+  background: var(--chip-fill);
+  color: var(--chip-ink);
+}
+
+.solid:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+/* 透明：坐在玻璃上的輕量動作 */
+.ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ink);
+}
+
+.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 純文字：頁首的模式切換 */
+.quiet {
+  min-height: 32px;
+  padding: 0 2px;
+  background: none;
+  color: var(--ink);
+}
+
+.quiet:hover:not(:disabled) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.compact {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 0.78rem;
+}

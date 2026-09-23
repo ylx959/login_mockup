@@ -1,5 +1,8 @@
 fastapi
 uvicorn[standard]
+mysql-connector-python
+pwdlib[argon2]
+pydantic[email]
 sqlalchemy
 pymysql
 cryptography

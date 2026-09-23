@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.brand {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.title {
+  margin: 0 0 22px;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.fields {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.status {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  color: var(--error-ink);
+  font-size: 0.82rem;
+}
+
+/* 左邊長段法律小字，右邊大圓形送出鍵 */
+.actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.legal {
+  margin: 0;
+  max-width: 24ch;
+  color: var(--ink-faint);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.legal a {
+  color: var(--ink-muted);
+  text-underline-offset: 2px;
+}
