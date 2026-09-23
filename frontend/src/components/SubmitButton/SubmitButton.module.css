@@ -68,8 +68,8 @@
   border-radius: 50%;
   background: var(--accent-white-solid);
   will-change: transform;
-  /* 收起：先快後慢 */
-  transition: transform var(--sweep) cubic-bezier(0.25, 1, 0.4, 1);
+  /* 收起：一放開就猛地縮回一半，剩下的像被阻力拖住，慢慢貼回圓點 */
+  transition: transform var(--sweep) cubic-bezier(0.05, 0.9, 0.1, 1);
 }
 
 .submit:hover:not(:disabled) .fill,
@@ -83,8 +83,8 @@
   position: relative;
   z-index: 1;
   white-space: nowrap;
-  /* 收起是先快後慢，白底很早就退離文字了 */
-  transition: color 90ms linear calc(var(--sweep) * 0.3);
+  /* 收起一開始字就翻回白色，不等白底退開 */
+  transition: color 90ms linear;
 }
 
 .submit:hover:not(:disabled) .label,

@@ -25,8 +25,8 @@
   /* 卡片變亮之後，凹槽做成比卡片更暗反而對比更好，也更像凹陷的欄位 */
   --field-fill: rgba(87, 87, 87, 0.26);
   --field-fill-focus: rgba(0, 0, 0, 0.265);
-  --field-radius: 15px;
-  --field-height: 48px;
+  --field-radius: 13px;
+  --field-height: 45px;
 
   /* 控制項 */
   --chip-fill: rgba(255, 255, 255, 0.92);

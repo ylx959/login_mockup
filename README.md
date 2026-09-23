@@ -1,5 +1,7 @@
 # YLX Lab Login Mockup
 
+![readme](public/readme.png)
+
 A dark, frosted-glass login flow. A small **touch me** pill floats over a photo backdrop; tap it and the pill morphs into a glass card where you can log in or sign up. After a successful login the card gives way to a welcome page, and signing out shrinks everything back into the pill.
 
 ## Build with
