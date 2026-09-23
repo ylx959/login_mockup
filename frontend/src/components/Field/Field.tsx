@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 import { Icon } from "~/components/Icon/Icon";
 import type { FieldSpec } from "~/data/fields";
 
@@ -11,10 +9,9 @@ export type FieldProps = {
   onChange(value: string): void;
   error?: string | undefined;
   disabled?: boolean;
-  trailing?: ReactNode;
 };
 
-export function Field({ spec, value, onChange, error, disabled = false, trailing }: FieldProps) {
+export function Field({ spec, value, onChange, error, disabled = false }: FieldProps) {
   const id = `field-${spec.name}`;
   const errorId = `${id}-error`;
 
@@ -27,7 +24,7 @@ export function Field({ spec, value, onChange, error, disabled = false, trailing
 
       <div className={`${styles.shell} ${error ? styles.invalid : ""}`}>
         <span className={styles.badge}>
-          <Icon name={spec.icon} size={18} />
+          <Icon name={spec.icon} size={17} />
         </span>
 
         <input
@@ -45,8 +42,6 @@ export function Field({ spec, value, onChange, error, disabled = false, trailing
           {...(error ? { "aria-invalid": true, "aria-describedby": errorId } : {})}
           onChange={(event) => onChange(event.target.value)}
         />
-
-        {trailing ? <span className={styles.trailing}>{trailing}</span> : null}
       </div>
 
       {error ? (

@@ -4,15 +4,15 @@
 
 :root {
   /* 底層 */
-  --bg-base: #0b0d10;
+  --bg-base: #ffffff;
 
   /* 玻璃：刻意很透，背後的形狀要看得見，質感才成立 */
   /* 照片沒有壓暗罩，變暗只發生在卡片底下。
      0.64 是白字（5.9:1）與小字（5.0:1）在窗簾透光處仍達 AA 的最低濃度，
      再透就得把文字全部換成純白、失去層次 */
-  --glass-fill: rgba(20, 22, 26, 0.64);
-  --glass-blur: blur(54px) saturate(190%);
-  --glass-radius: 34px;
+  --glass-fill: rgba(160, 160, 160, 0.2);
+  --glass-blur: blur(20px) saturate(100%);
+  --glass-radius: 25px;
   --glass-hairline: rgba(255, 255, 255, 0.16);
   --glass-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7);
 
@@ -23,10 +23,10 @@
 
   /* 欄位 */
   /* 卡片變亮之後，凹槽做成比卡片更暗反而對比更好，也更像凹陷的欄位 */
-  --field-fill: rgba(0, 0, 0, 0.26);
+  --field-fill: rgba(62, 62, 62, 0.26);
   --field-fill-focus: rgba(0, 0, 0, 0.38);
   --field-radius: 999px;
-  --field-height: 58px;
+  --field-height: 52px;
 
   /* 控制項 */
   --chip-fill: rgba(255, 255, 255, 0.92);
@@ -35,9 +35,15 @@
 
   --error-ink: #ffb4a8;
 
+  /* 送出鍵的橘。深色玻璃上橘色當文字過不了 AA（最亮的 #ffd4b0 也只有 4.4:1），
+     所以靜止時只用它當框線與圓點，hover 攤開成底色之後改用深色字。 */
+  --accent-orange: #ffffff;
+  --accent-orange-solid: #ffffff;
+  --accent-orange-ink: #6c2323;
+
   --focus-ring: 0 0 0 2px var(--bg-base), 0 0 0 4px rgba(255, 255, 255, 0.9);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
+  --ease-in: cubic-bezier(0.42, 0, 1, 1);
   color-scheme: dark;
   font-family:
     -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;

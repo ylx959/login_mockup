@@ -1,0 +1,38 @@
+/* 收合狀態。沿用跟卡片同一組玻璃 token，所以展開時是「同一塊材質長大」，
+   而不是換成另一個東西。 */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 34px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  outline: 1px solid var(--glass-hairline);
+  outline-offset: -1px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  /* 只補間 filter，不能碰 transform：
+     transform 是 Motion 的 layout 動畫在用的，兩邊搶會打架 */
+  transition: filter 700ms var(--ease-out);
+  /* 進場用 CSS：Motion 走 rAF，分頁在背景會被節流 */
+  animation: rise 420ms var(--ease-out) both;
+}
+
+.pill:hover {
+  filter: brightness(1.12);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+}

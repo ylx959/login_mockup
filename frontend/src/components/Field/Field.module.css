@@ -7,9 +7,12 @@
 .shell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
+  /* 拖曳時不要把 badge 與內距一起反白 */
+  user-select: none;
+  -webkit-user-select: none;
   min-height: var(--field-height);
-  padding: 0 8px 0 9px;
+  padding: 0 8px;
   border-radius: var(--field-radius);
   background: var(--field-fill);
   transition: background-color 220ms var(--ease-out);
@@ -23,8 +26,8 @@
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--badge-fill);
   color: var(--ink);
@@ -37,7 +40,7 @@
   border: 0;
   background: none;
   color: var(--ink);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
 }
 
 .input::placeholder {
@@ -45,14 +48,34 @@
   opacity: 1;
 }
 
+/* 欄位外殼設了 user-select:none，輸入內容要自己拿回來，
+   否則貼上、全選與密碼管理員都會失效 */
+.input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Chrome 自動填入時會自己畫一塊不透明底色。圓角在外層 .shell 上，
+   input 本身是方的，所以那塊底色會變成一個直角方塊蓋掉玻璃感。
+   background-clip:text 把它裁到只剩文字範圍，方塊就不見了；
+   底色是用動畫套上去的，再把過渡時間拉到極長讓它永遠套不完。 */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active,
+.input:autofill {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  transition: background-color 600000s 0s ease-in-out;
+}
+
 .input:focus {
   outline: 0;
   box-shadow: none;
 }
 
-.trailing {
-  flex: 0 0 auto;
-}
 
 .error {
   margin: 0;

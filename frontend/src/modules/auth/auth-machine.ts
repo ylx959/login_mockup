@@ -1,9 +1,9 @@
 /**
  * 合法的狀態轉移都在這裡，回傳新狀態，不碰 DOM、不發請求。
  *
- *   booting → form(signIn ↔ signUp) → submitting → welcome
- *                    ↖ error ↗                       │
- *                    └────── signOut ────────────────┘
+ *   booting → collapsed → form(signIn ↔ signUp) → submitting → welcome
+ *                 ↑                ↖ error ↗                     │
+ *                 └──────────────── signOut ────────────────────-┘
  *
  * pendingId 用來擋遲到的回應：使用者送出後又改按別的，
  * 先前那個請求回來時不該把畫面拉回去。
@@ -12,7 +12,7 @@
 import type { AuthErrorCode, Member } from "./types";
 
 export type AuthMode = "signIn" | "signUp";
-export type AuthPhase = "booting" | "form" | "welcome";
+export type AuthPhase = "booting" | "collapsed" | "form" | "welcome";
 export type AuthStatus = "idle" | "submitting" | "signingOut";
 
 export type AuthState = {
@@ -26,6 +26,7 @@ export type AuthState = {
 
 export type AuthEvent =
   | { type: "SESSION_RESOLVED"; member: Member | null }
+  | { type: "OPEN" }
   | { type: "SET_MODE"; mode: AuthMode }
   | { type: "SUBMIT_STARTED"; requestId: number }
   | { type: "SUBMIT_SUCCEEDED"; requestId: number; member: Member }
@@ -43,7 +44,8 @@ export const initialAuthState: AuthState = Object.freeze({
   pendingId: null,
 });
 
-const anonymous: AuthState = { ...initialAuthState, phase: "form" };
+/** 未登入時的起點：收合成一顆膠囊，點了才展開表單。 */
+const anonymous: AuthState = { ...initialAuthState, phase: "collapsed" };
 
 export function reduceAuth(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
@@ -51,6 +53,9 @@ export function reduceAuth(state: AuthState, event: AuthEvent): AuthState {
       return event.member
         ? { ...initialAuthState, phase: "welcome", member: event.member }
         : anonymous;
+
+    case "OPEN":
+      return state.phase === "collapsed" ? { ...state, phase: "form", error: null } : state;
 
     case "SET_MODE":
       return state.phase === "form" && state.status === "idle" && state.mode !== event.mode

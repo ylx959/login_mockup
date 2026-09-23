@@ -21,10 +21,22 @@ describe("reduceAuth", () => {
     expect(next).toMatchObject({ phase: "welcome", member: MEMBER });
   });
 
-  it("shows the form when nobody is signed in", () => {
+  it("collapses to the pill when nobody is signed in", () => {
     const next = reduceAuth(initialAuthState, { type: "SESSION_RESOLVED", member: null });
 
-    expect(next).toMatchObject({ phase: "form", member: null });
+    expect(next).toMatchObject({ phase: "collapsed", member: null });
+  });
+
+  it("opens the form from the collapsed pill", () => {
+    const collapsed = reduceAuth(initialAuthState, { type: "SESSION_RESOLVED", member: null });
+
+    expect(reduceAuth(collapsed, { type: "OPEN" })).toMatchObject({ phase: "form" });
+  });
+
+  it("ignores OPEN when the form is already showing", () => {
+    const open = form();
+
+    expect(reduceAuth(open, { type: "OPEN" })).toBe(open);
   });
 
   it("switches mode and clears the previous error", () => {
@@ -107,12 +119,12 @@ describe("reduceAuth", () => {
     expect(next).toMatchObject({ phase: "welcome", status: "signingOut", pendingId: 4 });
   });
 
-  it("returns to an empty form after signing out", () => {
+  it("returns to the collapsed pill after signing out", () => {
     const pending = reduceAuth(welcome(), { type: "SIGN_OUT_STARTED", requestId: 4 });
 
     const next = reduceAuth(pending, { type: "SIGN_OUT_SUCCEEDED", requestId: 4 });
 
-    expect(next).toMatchObject({ phase: "form", member: null, status: "idle" });
+    expect(next).toMatchObject({ phase: "collapsed", member: null, status: "idle" });
   });
 
   it("stays on welcome when signing out fails", () => {

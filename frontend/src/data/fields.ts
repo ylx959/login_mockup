@@ -34,7 +34,7 @@ const name: FieldSpec = {
 const email: FieldSpec = {
   name: "email",
   label: "Email",
-  placeholder: "e-mail address",
+  placeholder: "email address",
   type: "email",
   icon: "at",
   autoComplete: "email",

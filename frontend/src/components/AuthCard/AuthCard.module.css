@@ -9,14 +9,14 @@
 .brand {
   margin: 0;
   color: var(--ink-muted);
-  font-size: 0.9rem;
+  font-size: 1.02rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .title {
-  margin: 0 0 22px;
-  font-size: 2rem;
+  margin: 0 0 18px;
+  font-size: 1.72rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -24,8 +24,25 @@
 
 .fields {
   display: grid;
-  gap: 12px;
-  margin-bottom: 22px;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* 切換模式時新欄位原地淡入，不位移 */
+.fieldSlot {
+  animation: fadeIn 280ms var(--ease-out) both;
+}
+
+/* 共享外殼進入展開後半段時，整張卡片內容就在最終位置接著淡入。
+   用 CSS 而不是 Motion：Motion 走 rAF，分頁在背景會被節流。 */
+.content {
+  animation: fadeIn 320ms var(--ease-out) 140ms both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
 }
 
 .status {
@@ -35,23 +52,25 @@
   font-size: 0.82rem;
 }
 
-/* 左邊長段法律小字，右邊大圓形送出鍵 */
+/* 只剩送出鍵，置中 */
 .actions {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: center;
 }
 
-.legal {
-  margin: 0;
-  max-width: 24ch;
-  color: var(--ink-faint);
-  font-size: 0.68rem;
-  line-height: 1.5;
+/* 標題在兩個模式間交換時，兩段文字會短暫重疊，用 grid 疊在同一格 */
+.title {
+  display: grid;
+  grid-template-areas: "text";
 }
 
-.legal a {
-  color: var(--ink-muted);
-  text-underline-offset: 2px;
+.titleText {
+  grid-area: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content,
+  .fieldSlot {
+    animation: none;
+  }
 }

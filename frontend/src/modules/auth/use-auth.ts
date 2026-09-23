@@ -17,6 +17,8 @@ import {
 import type { Registration } from "./types";
 
 export type AuthActions = {
+  /** 把收合的膠囊展開成表單。 */
+  open(): void;
   setMode(mode: AuthMode): void;
   /** 三個欄位都收下；登入模式會自己忽略 name。 */
   submit(values: Registration): Promise<void>;
@@ -43,6 +45,8 @@ export function useAuth(client: AuthClient): { state: AuthState; actions: AuthAc
       alive = false;
     };
   }, [client]);
+
+  const open = useCallback(() => dispatch({ type: "OPEN" }), []);
 
   const setMode = useCallback((mode: AuthMode) => dispatch({ type: "SET_MODE", mode }), []);
 
@@ -84,8 +88,8 @@ export function useAuth(client: AuthClient): { state: AuthState; actions: AuthAc
     );
   }, [client]);
 
-  const actions = useRef<AuthActions>({ setMode, submit, signOut });
-  actions.current = { setMode, submit, signOut };
+  const actions = useRef<AuthActions>({ open, setMode, submit, signOut });
+  actions.current = { open, setMode, submit, signOut };
 
   return { state, actions: actions.current };
 }

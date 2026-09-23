@@ -11,12 +11,4 @@
   /* 邊緣只有一條極淡的內描高光，不是外框 */
   outline: 1px solid var(--glass-hairline);
   outline-offset: -1px;
-  animation: rise 420ms var(--ease-out) both;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.99);
-  }
 }

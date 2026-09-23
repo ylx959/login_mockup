@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { App } from "~/App";
+import { textVariants } from "~/lib/motion";
 import type { AuthClient } from "~/modules/auth/auth-client";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
@@ -25,11 +26,33 @@ const renderApp = (client: AuthClient) => {
 const emailBox = () => screen.getByLabelText("Email");
 const passwordBox = () => screen.getByLabelText("Password");
 
+/** 未登入時畫面是一顆收合的膠囊，點開才看得到表單。 */
+const openCard = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.click(await screen.findByRole("button", { name: "touch me" }));
+  await screen.findByRole("heading", { name: "Log in" });
+};
+
 describe("auth card", () => {
-  it("shows the log in form when nobody is signed in", async () => {
+  it("fades swapped title text without moving it", () => {
+    expect(textVariants).toEqual({
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+    });
+  });
+
+  it("starts collapsed as a pill when nobody is signed in", async () => {
     renderApp(fakeClient());
 
-    expect(await screen.findByRole("heading", { name: "Log in" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "touch me" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Email")).not.toBeInTheDocument();
+  });
+
+  it("opens the log in form when the pill is tapped", async () => {
+    const user = renderApp(fakeClient());
+
+    await openCard(user);
+
     expect(emailBox()).toBeInTheDocument();
     expect(screen.queryByLabelText("Name")).not.toBeInTheDocument();
   });
@@ -43,12 +66,12 @@ describe("auth card", () => {
   it("treats an unreachable server at boot as signed out", async () => {
     renderApp(fakeClient({ checkSession: vi.fn().mockResolvedValue({ ok: false, code: "network" }) }));
 
-    expect(await screen.findByRole("heading", { name: "Log in" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "touch me" })).toBeInTheDocument();
   });
 
   it("switches to sign up and reveals the name field", async () => {
     const user = renderApp(fakeClient());
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
 
     await user.click(screen.getByRole("button", { name: "Sign up" }));
 
@@ -58,7 +81,7 @@ describe("auth card", () => {
 
   it("keeps the email but clears the password when switching mode", async () => {
     const user = renderApp(fakeClient());
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.type(emailBox(), "annie@example.com");
     await user.type(passwordBox(), "correct-horse");
 
@@ -71,7 +94,7 @@ describe("auth card", () => {
   it("sends only email and password when logging in", async () => {
     const client = fakeClient();
     const user = renderApp(client);
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.type(emailBox(), "annie@example.com");
     await user.type(passwordBox(), "correct-horse");
 
@@ -85,10 +108,23 @@ describe("auth card", () => {
     );
   });
 
+  it("finishes hiding the login content before showing the welcome content", async () => {
+    const user = renderApp(fakeClient());
+    await openCard(user);
+    await user.type(emailBox(), "annie@example.com");
+    await user.type(passwordBox(), "correct-horse");
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    await screen.findByRole("heading", { name: "Annie Lin" });
+
+    expect(screen.queryByRole("heading", { name: "Log in" })).not.toBeInTheDocument();
+    expect(document.querySelectorAll("main section")).toHaveLength(1);
+  });
+
   it("sends name, email and password when creating an account", async () => {
     const client = fakeClient();
     const user = renderApp(client);
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.click(screen.getByRole("button", { name: "Sign up" }));
     await user.type(screen.getByLabelText("Name"), "Annie Lin");
     await user.type(emailBox(), "annie@example.com");
@@ -108,7 +144,7 @@ describe("auth card", () => {
   it("blocks submission and links the message when a field is invalid", async () => {
     const client = fakeClient();
     const user = renderApp(client);
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.type(emailBox(), "not-an-email");
     await user.type(passwordBox(), "correct-horse");
 
@@ -124,7 +160,7 @@ describe("auth card", () => {
       signIn: vi.fn().mockResolvedValue({ ok: false, code: "invalid_credentials" }),
     });
     const user = renderApp(client);
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.type(emailBox(), "annie@example.com");
     await user.type(passwordBox(), "wrong-password");
 
@@ -138,7 +174,7 @@ describe("auth card", () => {
   it("reports a duplicate email when signing up", async () => {
     const client = fakeClient({ signUp: vi.fn().mockResolvedValue({ ok: false, code: "email_taken" }) });
     const user = renderApp(client);
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.click(screen.getByRole("button", { name: "Sign up" }));
     await user.type(screen.getByLabelText("Name"), "Annie Lin");
     await user.type(emailBox(), "annie@example.com");
@@ -157,7 +193,7 @@ describe("auth card", () => {
       }),
     );
     const user = renderApp(fakeClient({ signIn }));
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.type(emailBox(), "annie@example.com");
     await user.type(passwordBox(), "correct-horse");
 
@@ -180,14 +216,14 @@ describe("auth card", () => {
     expect(heading.querySelector("img")).toBeNull();
   });
 
-  it("signs out back to the log in form", async () => {
+  it("signs out back to the collapsed pill", async () => {
     const client = fakeClient({ checkSession: vi.fn().mockResolvedValue({ ok: true, member: MEMBER }) });
     const user = renderApp(client);
     await screen.findByRole("heading", { name: "Annie Lin" });
 
     await user.click(screen.getByRole("button", { name: "Sign out" }));
 
-    expect(await screen.findByRole("heading", { name: "Log in" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "touch me" })).toBeInTheDocument();
     expect(client.signOut).toHaveBeenCalledOnce();
   });
 
@@ -207,7 +243,7 @@ describe("auth card", () => {
 
   it("gives every input a label and an autocomplete hint", async () => {
     const user = renderApp(fakeClient());
-    await screen.findByRole("heading", { name: "Log in" });
+    await openCard(user);
     await user.click(screen.getByRole("button", { name: "Sign up" }));
 
     for (const input of screen.getAllByRole("textbox")) {

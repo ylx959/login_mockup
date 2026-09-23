@@ -1,40 +1,146 @@
-/* 參考圖裡的大圓形送出鍵。深色 UI 反過來做成亮色，成為卡片上唯一的強焦點 */
-.submit {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 58px;
-  height: 58px;
-  border: 0;
-  border-radius: 50%;
-  background: var(--chip-fill);
-  color: var(--chip-ink);
-  transition:
-    transform 140ms var(--ease-out),
-    background-color 200ms var(--ease-out);
-}
+/* 藥丸外框 + 右側圓點；hover 時圓點攤開填滿內側，外框與色塊之間留一圈縫。
+   文字換色用一段很短的 transition，靠 delay 對準白底掃過它的那一刻，
+   所以看起來是「白底經過時一次翻色」。 */
 
-.submit:hover:not(:disabled) {
-  background: #ffffff;
-  transform: scale(1.04);
+.submit {
+  --line: 1px;
+  /* 外框與攤開色塊之間那圈縫 */
+  --fill-gap: 2.5px;
+  /* 圓點與箭頭共用同一個尺寸與右邊距，箭頭才會剛好落在圓心 */
+  --dot: 34px;
+  --dot-inset: 6px;
+  /* 攤開總長，下面的 delay 都以它為基準 */
+  --sweep: 1000ms;
+  /* 圓點放大到剛好蓋過最寬那顆按鈕的對角即可（17px × 9 ≈ 153px）。
+     設太大的話曲線的時間會浪費在「圓形已經超出可視範圍後繼續長大」 */
+  --sweep-scale: 9;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  /* 瀏覽器給 button 預設 padding: 1px 6px，會讓內容位置算不準 */
+  padding: 0 var(--dot-inset) 0 20px;
+  border: var(--line) solid var(--accent-orange);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  /* 把重繪關在按鈕裡，不要波及外層那張 backdrop-filter 的卡片 */
+  contain: layout paint;
+  transition: transform 140ms var(--ease-out);
 }
 
 .submit:active:not(:disabled) {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .submit:disabled {
   cursor: progress;
 }
 
-/* 送出中：圓形本身變成進度環，寬高不變所以版面不跳動 */
+/* 縫隙由這層負責：比按鈕內縮一圈，圓點長大時會被裁在縫之內 */
+.fillClip {
+  position: absolute;
+  inset: var(--fill-gap);
+  z-index: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 靜止時是右側一顆圓點，hover 時放大填滿內側。
+   用 transform 而不是 clip-path：clip-path 每一幀都要重繪，
+   而這顆按鈕坐在 backdrop-filter 的卡片上，重繪會連帶重新取樣那層模糊，
+   連續 hover 幾次就會卡。transform 可以交給合成器。 */
+.fill {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--dot-inset) - var(--fill-gap));
+  width: var(--dot);
+  height: var(--dot);
+  margin-top: calc(var(--dot) / -2);
+  border-radius: 50%;
+  background: var(--accent-orange-solid);
+  will-change: transform;
+  /* 收起：先快後慢 */
+  transition: transform var(--sweep) cubic-bezier(0.25, 1, 0.4, 1);
+}
+
+.submit:hover:not(:disabled) .fill,
+.submit:focus-visible:not(:disabled) .fill {
+  transform: scale(var(--sweep-scale));
+  /* 展開：前段卡住做出阻力感，掙脫之後再很慢地貼上去 */
+  transition: transform var(--sweep) cubic-bezier(0.78, 0.02, 0.18, 1);
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  /* 收起是先快後慢，白底很早就退離文字了 */
+  transition: color 90ms linear calc(var(--sweep) * 0.3);
+}
+
+.submit:hover:not(:disabled) .label,
+.submit:focus-visible:not(:disabled) .label {
+  color: var(--accent-orange-ink);
+  /* 展開有阻力，白底大約在四成的時間才掃過文字 */
+  transition: color 90ms linear calc(var(--sweep) * 0.42);
+}
+
+/* 箭頭一直坐在圓點上，所以不需要換色 */
+.arrow {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: var(--dot);
+  height: var(--dot);
+  color: var(--accent-orange-ink);
+}
+
+/* hover 時往右跑出去一次，再從左邊回到原位 */
+.submit:hover:not(:disabled) .arrow,
+.submit:focus-visible:not(:disabled) .arrow {
+  animation: arrowRun 620ms var(--ease-out) both;
+}
+
+@keyframes arrowRun {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  /* 跑出右緣（被按鈕的 overflow 裁掉）時已經完全透明 */
+  38% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  /* 瞬間移到左邊，這一格仍然透明，所以看不到跳躍 */
+  39% {
+    transform: translateX(-14px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 送出中：箭頭換成進度環，寬度不變所以版面不跳動 */
 .spinner {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.7;
   animation: spin 760ms linear infinite;
 }
 

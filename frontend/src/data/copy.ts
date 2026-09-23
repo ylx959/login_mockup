@@ -4,6 +4,9 @@ import type { AuthErrorCode } from "~/modules/auth/types";
 
 export const brand = "YLX Lab";
 
+/** 收合狀態的膠囊。 */
+export const touchLabel = "touch me";
+
 export const modeCopy = {
   signIn: {
     title: "Log in",
@@ -33,14 +36,6 @@ export const validationCopy = {
   password: "Use at least 8 characters for your password.",
 } as const;
 
-export const legal = {
-  body:
-    "For use by adults only (18 years of age and older). Keep out of reach of children and pets. In case of accidental ingestion contact our",
-  linkLabel: "hotline",
-  linkHref: "#hotline",
-};
-
-export const forgotLabel = "I forgot";
 export const signOutLabel = "Sign out";
 export const signingOutLabel = "Signing out…";
 export const welcomeGreeting = "Welcome back,";
