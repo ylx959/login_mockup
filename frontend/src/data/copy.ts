@@ -1,6 +1,6 @@
 /** 所有會被使用者讀到的字串。改文案不必進元件。 */
 
-import type { AuthErrorCode } from "~/modules/auth/types";
+import type { AuthErrorCode } from "@/modules/auth/types";
 
 export const brand = "YLX Lab";
 

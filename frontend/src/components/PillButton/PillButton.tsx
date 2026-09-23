@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-import styles from "./PillButton.module.css";
+import styles from "@/styles/PillButton.module.css";
 
 export type PillVariant = "solid" | "ghost" | "quiet";
 

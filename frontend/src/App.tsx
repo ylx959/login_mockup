@@ -2,16 +2,16 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useLayoutEffect, useMemo } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 
-import { AuthCard } from "~/components/AuthCard/AuthCard";
-import { Backdrop } from "~/components/Backdrop/Backdrop";
-import { GlassPanel } from "~/components/GlassPanel/GlassPanel";
-import { TouchPill } from "~/components/TouchPill/TouchPill";
-import { WelcomeCard } from "~/components/WelcomeCard/WelcomeCard";
-import { instantScreenVariants, screenVariants } from "~/lib/motion";
-import { createAuthClient, type AuthClient } from "~/modules/auth/auth-client";
-import { useAuth } from "~/modules/auth/use-auth";
+import { AuthCard } from "@/components/AuthCard/AuthCard";
+import { Backdrop } from "@/components/Backdrop/Backdrop";
+import { GlassPanel } from "@/components/GlassPanel/GlassPanel";
+import { TouchPill } from "@/components/TouchPill/TouchPill";
+import { WelcomeCard } from "@/components/WelcomeCard/WelcomeCard";
+import { instantScreenVariants, screenVariants } from "@/lib/motion";
+import { createAuthClient, type AuthClient } from "@/modules/auth/auth-client";
+import { useAuth } from "@/modules/auth/use-auth";
 
-import styles from "./App.module.css";
+import styles from "@/App.module.css";
 
 export type AppProps = {
   /** 測試可以換掉 adapter，正式執行時走預設的 HTTP client。 */

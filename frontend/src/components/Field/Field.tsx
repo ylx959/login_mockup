@@ -1,7 +1,7 @@
-import { Icon } from "~/components/Icon/Icon";
-import type { FieldSpec } from "~/data/fields";
+import { Icon } from "@/components/Icon/Icon";
+import type { FieldSpec } from "@/data/fields";
 
-import styles from "./Field.module.css";
+import styles from "@/styles/Field.module.css";
 
 export type FieldProps = {
   spec: FieldSpec;

@@ -1,9 +1,9 @@
 import { motion, useReducedMotion } from "motion/react";
 
-import { touchLabel } from "~/data/copy";
-import { instant, shellSpring, SURFACE_LAYOUT_ID } from "~/lib/motion";
+import { touchLabel } from "@/data/copy";
+import { instant, shellSpring, SURFACE_LAYOUT_ID } from "@/lib/motion";
 
-import styles from "./TouchPill.module.css";
+import styles from "@/styles/TouchPill.module.css";
 
 export type TouchPillProps = {
   onOpen(): void;

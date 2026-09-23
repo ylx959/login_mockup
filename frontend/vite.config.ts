@@ -9,7 +9,7 @@ const API_TARGET = process.env.API_TARGET ?? "http://127.0.0.1:9000";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { "~": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
   server: {
     port: 5173,

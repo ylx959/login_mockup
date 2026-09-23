@@ -1,4 +1,4 @@
-import type { IconName } from "~/data/fields";
+import type { IconName } from "@/data/fields";
 
 /** 細線白色圖示，手寫 SVG，不引入 icon 套件。 */
 export type IconGlyph = IconName | "chevronRight" | "close";

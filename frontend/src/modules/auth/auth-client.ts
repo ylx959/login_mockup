@@ -5,7 +5,7 @@
  * 介面只有四個動作，而且吃一個 fetch 當依賴，所以測試不需要網路。
  */
 
-import { requestJson, type FetchLike } from "~/lib/http";
+import { requestJson, type FetchLike } from "@/lib/http";
 
 import type {
   AuthOutcome,
@@ -14,7 +14,7 @@ import type {
   Registration,
   SessionOutcome,
   AuthErrorCode,
-} from "./types";
+} from "@/modules/auth/types";
 
 const ENDPOINT = {
   member: "/api/member",

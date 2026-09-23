@@ -7,14 +7,14 @@
 
 import { useCallback, useEffect, useReducer, useRef } from "react";
 
-import type { AuthClient } from "./auth-client";
+import type { AuthClient } from "@/modules/auth/auth-client";
 import {
   initialAuthState,
   reduceAuth,
   type AuthMode,
   type AuthState,
-} from "./auth-machine";
-import type { Registration } from "./types";
+} from "@/modules/auth/auth-machine";
+import type { Registration } from "@/modules/auth/types";
 
 export type AuthActions = {
   /** 把收合的膠囊展開成表單。 */

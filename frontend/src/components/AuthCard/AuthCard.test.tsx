@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { App } from "~/App";
-import * as motionConfig from "~/lib/motion";
-import type { AuthClient } from "~/modules/auth/auth-client";
+import { App } from "@/App";
+import * as motionConfig from "@/lib/motion";
+import type { AuthClient } from "@/modules/auth/auth-client";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
 

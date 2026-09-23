@@ -1,4 +1,4 @@
-import styles from "./Backdrop.module.css";
+import styles from "@/styles/Backdrop.module.css";
 
 export function Backdrop() {
   return (

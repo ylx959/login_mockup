@@ -6,23 +6,23 @@ import {
 } from "motion/react";
 import { useState } from "react";
 
-import { Field } from "~/components/Field/Field";
-import { PillButton } from "~/components/PillButton/PillButton";
-import { SubmitButton } from "~/components/SubmitButton/SubmitButton";
-import { brand, errorCopy, modeCopy } from "~/data/copy";
-import { fieldsFor, type FieldName } from "~/data/fields";
-import type { AuthMode, AuthState } from "~/modules/auth/auth-machine";
-import type { AuthActions } from "~/modules/auth/use-auth";
+import { Field } from "@/components/Field/Field";
+import { PillButton } from "@/components/PillButton/PillButton";
+import { SubmitButton } from "@/components/SubmitButton/SubmitButton";
+import { brand, errorCopy, modeCopy } from "@/data/copy";
+import { fieldsFor, type FieldName } from "@/data/fields";
+import type { AuthMode, AuthState } from "@/modules/auth/auth-machine";
+import type { AuthActions } from "@/modules/auth/use-auth";
 import {
   contentRevealVariants,
   contentSpring,
   instant,
   shellSpring,
   textVariants,
-} from "~/lib/motion";
-import { hasErrors, validate, type FieldErrors } from "~/modules/auth/validate";
+} from "@/lib/motion";
+import { hasErrors, validate, type FieldErrors } from "@/modules/auth/validate";
 
-import styles from "./AuthCard.module.css";
+import styles from "@/styles/AuthCard.module.css";
 
 const EMPTY = { name: "", email: "", password: "" };
 

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { FetchLike } from "~/lib/http";
+import type { FetchLike } from "@/lib/http";
 
-import { createAuthClient } from "./auth-client";
+import { createAuthClient } from "@/modules/auth/auth-client";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
 const respond = (body: unknown, status = 200) =>

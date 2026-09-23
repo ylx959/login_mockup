@@ -1,9 +1,9 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, type ReactNode } from "react";
 
-import { instant, shellSpring, SURFACE_LAYOUT_ID } from "~/lib/motion";
+import { instant, shellSpring, SURFACE_LAYOUT_ID } from "@/lib/motion";
 
-import styles from "./GlassPanel.module.css";
+import styles from "@/styles/GlassPanel.module.css";
 
 export type GlassPanelProps = {
   children: ReactNode;

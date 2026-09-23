@@ -3,11 +3,11 @@
  * 不然使用者填得進去卻被伺服器擋成 422。
  */
 
-import { validationCopy } from "~/data/copy";
-import type { FieldName } from "~/data/fields";
+import { validationCopy } from "@/data/copy";
+import type { FieldName } from "@/data/fields";
 
-import type { AuthMode } from "./auth-machine";
-import type { Registration } from "./types";
+import type { AuthMode } from "@/modules/auth/auth-machine";
+import type { Registration } from "@/modules/auth/types";
 
 export type FieldErrors = Partial<Record<FieldName, string>>;
 

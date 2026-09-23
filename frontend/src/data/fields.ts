@@ -1,8 +1,8 @@
 /** 欄位的規格資料；元件只負責畫，不決定有哪些欄位、限制是什麼。 */
 
-import type { AuthMode } from "~/modules/auth/auth-machine";
+import type { AuthMode } from "@/modules/auth/auth-machine";
 
-import { modeCopy } from "./copy";
+import { modeCopy } from "@/data/copy";
 
 export type FieldName = "name" | "email" | "password";
 export type IconName = "user" | "at" | "key";

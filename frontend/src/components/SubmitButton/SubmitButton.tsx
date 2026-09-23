@@ -1,6 +1,6 @@
-import { Icon } from "~/components/Icon/Icon";
+import { Icon } from "@/components/Icon/Icon";
 
-import styles from "./SubmitButton.module.css";
+import styles from "@/styles/SubmitButton.module.css";
 
 export type SubmitButtonProps = {
   label: string;
