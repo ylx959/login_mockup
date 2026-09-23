@@ -1,92 +1,181 @@
-# Login Mockup
+# YLX Lab Login Mockup
 
-深色毛玻璃的登入介面：半透明面板浮在會流動的背景上，可切換登入／註冊，登入後換成歡迎卡片。
-後端是 FastAPI + MySQL，前端是 React 19 + TypeScript + Vite，樣式用原生 CSS Modules（沒有 UI 套件、icon 套件或動畫函式庫）。
+A dark, frosted-glass login flow. A small **touch me** pill floats over a photo backdrop; tap it and the pill morphs into a glass card where you can log in or sign up. After a successful login the card gives way to a welcome page, and signing out shrinks everything back into the pill.
 
-## 需求
+## Build with
 
-- Python 3.12+ 與本機 MySQL（資料庫 `login_mockup`，內含 `users` 表）
-- Node 20+
+- React 19 & TypeScript
+- Vite
+- Motion (`motion/react`)
+- React Router
+- CSS Modules (no UI kit, no icon package)
+- FastAPI & MySQL
 
-## 啟動
+>React + TypeScript + Vite on the front, FastAPI + MySQL on the back. Motion drives the pill-to-card morph, the content reveal and the page hand-off.
 
-兩個終端機分別跑：
+## Highlights
+- **Pill ⇄ Card Morph** — The pill and the glass card share one `layoutId`, so Motion grows one into the other instead of fading one out and another in.
+- **Tap Outside to Collapse** — Pressing anywhere outside the card folds it back into the pill. It won't collapse while a request is in flight.
+- **Island-style Resizing** — Switching between log in and sign up changes the card's height with a spring, like a Dynamic Island, instead of jumping.
+- **Late-response Guard** — Every request carries an id; a response that comes back after the user has moved on is ignored instead of dragging the screen back.
+- **Neutral Errors** — A wrong password and an unknown email return exactly the same result, so nobody can probe which emails are registered.
 
-```bash
-# 後端（預設 127.0.0.1:9000）
-./backend/dev.sh
 
-# 前端（http://localhost:5173）
-npm --prefix frontend run dev
-```
-
-Vite 會把 `/api` 代理到後端，所以前端用相對路徑 `fetch("/api/...")` 就好，不會有 CORS 問題。
-後端如果跑在別的 port，用環境變數覆蓋代理目標，不需要改任何程式碼：
-
-```bash
-API_TARGET=http://127.0.0.1:8000 npm --prefix frontend run dev
-```
-
-`backend/dev.sh` 的 port 預設是 `${PORT:-9000}`，所以 `PORT=8000 ./backend/dev.sh` 也可以。
-
-## 測試
+## Development
 
 ```bash
-# 後端契約（11 項）；會自動建立並刪除 login_mockup_test，不碰正式資料庫
-./backend/.venv/bin/python -m pytest backend/tests -v
-
-# 前端（55 項：http、adapter、狀態機、驗證、元件）
-npm --prefix frontend test
-
-# 型別檢查
-npm --prefix frontend run typecheck
-
-# 正式build
-npm --prefix frontend run build
+git clone git@github.com:ylx959/login_mockup.git
+cd login_mockup
 ```
 
-第一次跑後端測試前要先裝開發相依：
+The backend and frontend run in separate terminals. Start the backend first.
+
+### Backend
+
+Requires Python 3.12+ and a local MySQL.
+
+**1. Create the database** (once):
+
+```sql
+CREATE DATABASE login_mockup;
+USE login_mockup;
+CREATE TABLE users(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    UNIQUE KEY email(email)
+);
+```
+
+**2. Set up `.env`** (once):
 
 ```bash
-source backend/dev.sh                      # 進 venv
-pip install -qr backend/requirements-dev.txt
+cd backend
+cp .env.example .env
+python3 -c 'import secrets;print(secrets.token_urlsafe(32))'   # paste the output into SESSION_SECRET
 ```
+
+| Variable | Default | Holds |
+|---|---|---|
+| `DB_HOST` | `127.0.0.1` | MySQL host |
+| `DB_PORT` | `3306` | MySQL port |
+| `DB_USER` | `root` | MySQL user |
+| `DB_PASSWORD` | — | MySQL password |
+| `DB_NAME` | `login_mockup` | Database name |
+| `SESSION_SECRET` | — | Signs the session cookie. Required |
+
+`.env` is ignored by git.
+
+**3. Run:**
+
+```bash
+./dev.sh                  # API on http://127.0.0.1:9000
+PORT=8000 ./dev.sh        # or on another port
+```
+
+On the first run, `dev.sh` creates `.venv` and installs `requirements.txt`. Use `source dev.sh` to enter the venv in the current terminal without starting the server.
+
+**Tests:**
+
+```bash
+source dev.sh
+pip install -qr requirements-dev.txt    # once
+python -m pytest tests -v               # 11 API contract tests
+```
+
+The tests create and drop their own `login_mockup_test` database, so your real data is never touched.
+
+### Frontend
+
+Requires Node 20+.
+
+```bash
+cd frontend
+npm install
+npm run dev               # http://localhost:5173
+npm run build             # outputs to dist/
+```
+
+Vite proxies `/api` to the backend, so the frontend just calls `fetch("/api/...")` with no CORS setup. The proxy targets `http://127.0.0.1:9000` by default. If the backend runs on another port, point the proxy at it:
+
+```bash
+API_TARGET=http://127.0.0.1:8000 npm run dev
+```
+
+**Tests:**
+
+```bash
+npm test                  # 67 tests: http, adapter, state machine, validation, components
+npm run typecheck
+```
+
+
+## Editing your own content
+
+Everything a user reads or fills in lives in `frontend/src/data/` — no need to open a component.
+
+| File | Holds |
+|---|---|
+| `copy.ts` | Brand name, the `touch me` label, titles and buttons for each mode, error and validation messages, welcome text |
+| `fields.ts` | Each field's label, placeholder, icon, autocomplete hint and length limits, plus which fields each mode shows |
+
+The length limits in `fields.ts` match the backend's `SignupRequest` (name 50 / password 128). Change them in both places, or users can type values the server will reject with `422`.
+
+### Change the feel of the motion
+
+All springs and variants live in `frontend/src/lib/motion.ts`.
+
+| Name | Controls |
+|---|---|
+| `shellSpring` | The pill ⇄ card morph and the card's height changes — slower, with a little overshoot |
+| `contentSpring` | Swapping titles and fields — faster, so it feels crisp |
+| `contentRevealVariants` | The form opening outward from its exact centre |
+| `screenVariants` | The fade hand-off between the login screen and the member page |
+
+Colours and glass effects are semantic tokens in `frontend/src/styles/tokens.css`. The backdrop photo is `frontend/src/assets/room.jpg`.
 
 ## API
 
-四個端點共用 `{ ok, member, error }` 的回應形狀，`member` 是 `{ name, email }`。
+All four endpoints return the same `{ ok, member, error }` shape, where `member` is `{ name, email }`.
 
-| 方法 | 路徑 | 送出 | 成功 | 失敗 |
+| Method | Path | Sends | Success | Failure |
 | --- | --- | --- | --- | --- |
 | POST | `/api/member` | `{name,email,password}` | `201` + member | `409` `email_taken` |
 | PUT | `/api/member/auth` | `{email,password}` | `200` + member | `401` `invalid_credentials` |
-| GET | `/api/member/auth` | — | `200` `{ok,member}` | 未登入回 `ok:false` |
+| GET | `/api/member/auth` | — | `200` `{ok,member}` | `ok:false` when signed out |
 | DELETE | `/api/member/auth` | — | `200` `{ok:true}` | — |
 
-輸入格式錯誤一律是 `422`，跟 `409`／`401` 是三種不同的可觀察錯誤。登入時帳號不存在與密碼錯誤回完全相同的結果，不讓人試出哪些 email 註冊過。
+Malformed input is always `422`, so `422`, `409` and `401` are three distinct errors the frontend can tell apart.
 
-## 結構
+### How It Works
 
 ```
 backend/
-  app/main.py                  FastAPI + mysql.connector，四個端點與 session
-  tests/                       契約測試（隔離的 login_mockup_test 資料庫）
+  app/main.py                  FastAPI + mysql.connector, four endpoints and the session
+  tests/                       Contract tests against an isolated login_mockup_test database
 
 frontend/src/
-  lib/http.ts                  唯一知道 fetch 怎麼設定的地方
+  lib/http.ts                  The only place that knows how fetch is configured
+  lib/motion.ts                Every spring and variant
   modules/auth/
-    types.ts                   Member、錯誤碼、請求/結果型別
-    auth-client.ts             唯一知道 /api/member 的 adapter
-    auth-machine.ts            純狀態轉移，擋掉遲到的回應
-    validate.ts                純驗證，規則對齊後端
-    use-auth.ts                元件唯一需要認識的認證介面
-  data/
-    copy.ts                    所有使用者看得到的字串
-    fields.ts                  欄位規格與各模式的組合
-  components/                  每個元件一個資料夾 + CSS Module
-  styles/tokens.css            深色玻璃的語意 token
+    types.ts                   Member, error codes, request/result types
+    auth-client.ts             The only adapter that knows about /api/member
+    auth-machine.ts            Pure state transitions; blocks late responses
+    validate.ts                Pure validation, rules aligned with the backend
+    use-auth.ts                The one auth interface components need
+  data/                        Copy and field specs
+  components/                  One folder per component, each with its own CSS Module
+  styles/tokens.css            Semantic tokens for the dark glass look
 ```
 
-模組的切法照 deep module 原則：介面小、實作厚、依賴從外面注入。
-`useAuth` 後面藏著狀態機、HTTP adapter、請求排序與遲到回應的防護，
-元件只看得到 `state` 加三個動作；測試換掉 `AuthClient` 就能跑，不需要網路。
+- **State Machine** — `booting → collapsed ⇄ form (log in ↔ sign up) → welcome`, and signing out returns to `collapsed`. Every legal transition lives in `auth-machine.ts`, which never touches the DOM or the network.
+- **One Hook** — `useAuth` hides the state machine, the HTTP adapter, request ordering and the late-response guard. Components only see `state` and a handful of actions.
+- **Injected Client** — Tests swap in a fake `AuthClient`, so the whole app runs without a network.
+
+## License
+Released under the [MIT License](LICENSE). © 2026 YLX Studio.
+
+The MIT License covers the code only. The backdrop photo `frontend/src/assets/room.jpg` comes from [Dezeen — Daddy Cool by Pattern Studio](https://www.dezeen.com/2025/02/21/daddy-cool-sydney-home-renovation-pattern-studio/); its rights stay with the original owners.

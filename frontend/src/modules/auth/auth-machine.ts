@@ -1,8 +1,8 @@
 /**
  * 合法的狀態轉移都在這裡，回傳新狀態，不碰 DOM、不發請求。
  *
- *   booting → collapsed → form(signIn ↔ signUp) → submitting → welcome
- *                 ↑                ↖ error ↗                     │
+ *   booting → collapsed ⇄ form(signIn ↔ signUp) → submitting → welcome
+ *                 ↑      (點外面收回)  ↖ error ↗                     │
  *                 └──────────────── signOut ────────────────────-┘
  *
  * pendingId 用來擋遲到的回應：使用者送出後又改按別的，
@@ -27,6 +27,7 @@ export type AuthState = {
 export type AuthEvent =
   | { type: "SESSION_RESOLVED"; member: Member | null }
   | { type: "OPEN" }
+  | { type: "CLOSE" }
   | { type: "SET_MODE"; mode: AuthMode }
   | { type: "SUBMIT_STARTED"; requestId: number }
   | { type: "SUBMIT_SUCCEEDED"; requestId: number; member: Member }
@@ -56,6 +57,12 @@ export function reduceAuth(state: AuthState, event: AuthEvent): AuthState {
 
     case "OPEN":
       return state.phase === "collapsed" ? { ...state, phase: "form", error: null } : state;
+
+    case "CLOSE":
+      // 請求進行中不收合，否則回應回來時畫面已經不在表單上
+      return state.phase === "form" && state.status === "idle"
+        ? { ...state, phase: "collapsed", error: null }
+        : state;
 
     case "SET_MODE":
       return state.phase === "form" && state.status === "idle" && state.mode !== event.mode

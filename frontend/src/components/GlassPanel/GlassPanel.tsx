@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import { instant, shellSpring, SURFACE_LAYOUT_ID } from "~/lib/motion";
 
@@ -8,6 +8,8 @@ import styles from "./GlassPanel.module.css";
 export type GlassPanelProps = {
   children: ReactNode;
   labelledBy?: string;
+  /** 在外殼以外的地方按下時呼叫。 */
+  onDismiss?(): void;
 };
 
 /**
@@ -20,11 +22,24 @@ export type GlassPanelProps = {
 export function GlassPanel({
   children,
   labelledBy,
+  onDismiss,
 }: GlassPanelProps) {
   const reduced = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+
+  // 用 pointerdown 而不是 click：在欄位裡按下、拖到外面才放開（例如選取文字）不該收合。
+  useEffect(() => {
+    if (!onDismiss) return;
+    const handle = (event: PointerEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) onDismiss();
+    };
+    document.addEventListener("pointerdown", handle);
+    return () => document.removeEventListener("pointerdown", handle);
+  }, [onDismiss]);
 
   return (
     <motion.section
+      ref={ref}
       layoutId={SURFACE_LAYOUT_ID}
       layout
       transition={reduced ? instant : shellSpring}

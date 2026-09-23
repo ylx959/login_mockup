@@ -49,7 +49,7 @@ export function App({ client }: AppProps = {}) {
           {state.phase === "collapsed" ? (
             <TouchPill key="pill" onOpen={actions.open} />
           ) : (
-            <GlassPanel key="panel" labelledBy={titleId}>
+            <GlassPanel key="panel" labelledBy={titleId} onDismiss={actions.close}>
               <AuthCard titleId={titleId} state={state} actions={actions} />
             </GlassPanel>
           )}

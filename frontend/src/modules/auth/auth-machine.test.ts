@@ -39,6 +39,18 @@ describe("reduceAuth", () => {
     expect(reduceAuth(open, { type: "OPEN" })).toBe(open);
   });
 
+  it("collapses the form back to the pill", () => {
+    const next = reduceAuth(form({ error: "invalid_credentials" }), { type: "CLOSE" });
+
+    expect(next).toMatchObject({ phase: "collapsed", error: null });
+  });
+
+  it("refuses to collapse mid-request", () => {
+    const pending = form({ status: "submitting", pendingId: 1 });
+
+    expect(reduceAuth(pending, { type: "CLOSE" })).toBe(pending);
+  });
+
   it("switches mode and clears the previous error", () => {
     const next = reduceAuth(form({ error: "invalid_credentials" }), {
       type: "SET_MODE",
