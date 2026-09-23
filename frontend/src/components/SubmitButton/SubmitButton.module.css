@@ -23,7 +23,7 @@
   min-height: 46px;
   /* 瀏覽器給 button 預設 padding: 1px 6px，會讓內容位置算不準 */
   padding: 0 var(--dot-inset) 0 20px;
-  border: var(--line) solid var(--accent-orange);
+  border: var(--line) solid var(--accent-white);
   border-radius: 999px;
   background: none;
   color: var(--ink);
@@ -66,7 +66,7 @@
   height: var(--dot);
   margin-top: calc(var(--dot) / -2);
   border-radius: 50%;
-  background: var(--accent-orange-solid);
+  background: var(--accent-white-solid);
   will-change: transform;
   /* 收起：先快後慢 */
   transition: transform var(--sweep) cubic-bezier(0.25, 1, 0.4, 1);
@@ -89,7 +89,7 @@
 
 .submit:hover:not(:disabled) .label,
 .submit:focus-visible:not(:disabled) .label {
-  color: var(--accent-orange-ink);
+  color: var(--accent-white-ink);
   /* 展開有阻力，白底大約在四成的時間才掃過文字 */
   transition: color 90ms linear calc(var(--sweep) * 0.42);
 }
@@ -103,7 +103,7 @@
   flex: 0 0 auto;
   width: var(--dot);
   height: var(--dot);
-  color: var(--accent-orange-ink);
+  color: var(--accent-white-ink);
 }
 
 /* hover 時往右跑出去一次，再從左邊回到原位 */

@@ -33,12 +33,6 @@
   animation: fadeIn 280ms var(--ease-out) both;
 }
 
-/* 共享外殼進入展開後半段時，整張卡片內容就在最終位置接著淡入。
-   用 CSS 而不是 Motion：Motion 走 rAF，分頁在背景會被節流。 */
-.content {
-  animation: fadeIn 320ms var(--ease-out) 140ms both;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -69,7 +63,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .content,
   .fieldSlot {
     animation: none;
   }

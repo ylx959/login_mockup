@@ -3,9 +3,5 @@ uvicorn[standard]
 mysql-connector-python
 pwdlib[argon2]
 pydantic[email]
-sqlalchemy
-pymysql
-cryptography
-pydantic-settings
+itsdangerous
 python-dotenv
-bcrypt

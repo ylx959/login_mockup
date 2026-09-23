@@ -17,7 +17,10 @@ export type GlassPanelProps = {
  * 外殼本身只負責共享 layout 變形，不另外做位移、縮放或淡入；
  * 內容顯示效果由卡片內部處理，避免兩層動畫互相干擾。
  */
-export function GlassPanel({ children, labelledBy }: GlassPanelProps) {
+export function GlassPanel({
+  children,
+  labelledBy,
+}: GlassPanelProps) {
   const reduced = useReducedMotion();
 
   return (

@@ -1,9 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { BrowserRouter } from "react-router";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { App } from "~/App";
-import { textVariants } from "~/lib/motion";
+import * as motionConfig from "~/lib/motion";
 import type { AuthClient } from "~/modules/auth/auth-client";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
@@ -19,7 +20,11 @@ function fakeClient(over: Partial<AuthClient> = {}): AuthClient {
 }
 
 const renderApp = (client: AuthClient) => {
-  render(<App client={client} />);
+  render(
+    <BrowserRouter>
+      <App client={client} />
+    </BrowserRouter>,
+  );
   return userEvent.setup();
 };
 
@@ -33,11 +38,22 @@ const openCard = async (user: ReturnType<typeof userEvent.setup>) => {
 };
 
 describe("auth card", () => {
+  beforeEach(() => window.history.replaceState({}, "", "/"));
+
   it("fades swapped title text without moving it", () => {
-    expect(textVariants).toEqual({
+    expect(motionConfig.textVariants).toEqual({
       initial: { opacity: 0 },
       animate: { opacity: 1 },
       exit: { opacity: 0 },
+    });
+  });
+
+  it("reveals the form outward from its exact center", () => {
+    expect(
+      (motionConfig as Record<string, unknown>).contentRevealVariants,
+    ).toEqual({
+      hidden: { clipPath: "inset(50% 50% 50% 50%)" },
+      visible: { clipPath: "inset(0% 0% 0% 0%)" },
     });
   });
 
@@ -58,9 +74,19 @@ describe("auth card", () => {
   });
 
   it("restores an active session straight to the welcome card", async () => {
+    window.history.replaceState({}, "", "/member");
     renderApp(fakeClient({ checkSession: vi.fn().mockResolvedValue({ ok: true, member: MEMBER }) }));
 
     expect(await screen.findByRole("heading", { name: "Annie Lin" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/member");
+  });
+
+  it("redirects an unauthenticated /member visit to /", async () => {
+    window.history.replaceState({}, "", "/member");
+    renderApp(fakeClient());
+
+    expect(await screen.findByRole("button", { name: "touch me" })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/");
   });
 
   it("treats an unreachable server at boot as signed out", async () => {
@@ -119,6 +145,19 @@ describe("auth card", () => {
 
     expect(screen.queryByRole("heading", { name: "Log in" })).not.toBeInTheDocument();
     expect(document.querySelectorAll("main section")).toHaveLength(1);
+  });
+
+  it("navigates to /member after a successful login", async () => {
+    window.history.replaceState({}, "", "/");
+    const user = renderApp(fakeClient());
+    await openCard(user);
+    await user.type(emailBox(), "annie@example.com");
+    await user.type(passwordBox(), "correct-horse");
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+    await screen.findByRole("heading", { name: "Annie Lin" });
+
+    expect(window.location.pathname).toBe("/member");
   });
 
   it("sends name, email and password when creating an account", async () => {
@@ -225,6 +264,21 @@ describe("auth card", () => {
 
     expect(await screen.findByRole("button", { name: "touch me" })).toBeInTheDocument();
     expect(client.signOut).toHaveBeenCalledOnce();
+    expect(window.location.pathname).toBe("/");
+  });
+
+  it("removes the member page before showing touch me after sign out", async () => {
+    const client = fakeClient({
+      checkSession: vi.fn().mockResolvedValue({ ok: true, member: MEMBER }),
+    });
+    const user = renderApp(client);
+    await screen.findByRole("heading", { name: "Annie Lin" });
+
+    await user.click(screen.getByRole("button", { name: "Sign out" }));
+    await screen.findByRole("button", { name: "touch me" });
+
+    expect(screen.queryByRole("heading", { name: "Annie Lin" })).not.toBeInTheDocument();
+    expect(document.querySelector("main section")).toBeNull();
   });
 
   it("stays on the welcome card when signing out fails", async () => {

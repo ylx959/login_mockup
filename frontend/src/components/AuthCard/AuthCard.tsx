@@ -13,7 +13,13 @@ import { brand, errorCopy, modeCopy } from "~/data/copy";
 import { fieldsFor, type FieldName } from "~/data/fields";
 import type { AuthMode, AuthState } from "~/modules/auth/auth-machine";
 import type { AuthActions } from "~/modules/auth/use-auth";
-import { contentSpring, instant, textVariants } from "~/lib/motion";
+import {
+  contentRevealVariants,
+  contentSpring,
+  instant,
+  shellSpring,
+  textVariants,
+} from "~/lib/motion";
 import { hasErrors, validate, type FieldErrors } from "~/modules/auth/validate";
 
 import styles from "./AuthCard.module.css";
@@ -46,6 +52,7 @@ export type AuthCardProps = {
 };
 
 export function AuthCard({ titleId, state, actions }: AuthCardProps) {
+  const reduced = useReducedMotion();
   const [values, setValues] = useState(EMPTY);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
@@ -80,8 +87,14 @@ export function AuthCard({ titleId, state, actions }: AuthCardProps) {
   };
 
   return (
-    <div className={styles.content}>
-      {/* 外殼展開進入後半段時，內容在原位接著淡入。 */}
+    <motion.div
+      className={styles.content}
+      variants={contentRevealVariants}
+      initial={reduced ? "visible" : "hidden"}
+      animate="visible"
+      transition={reduced ? instant : shellSpring}
+    >
+      {/* 內容與外殼同步，從正中心向四邊展開；不做整體淡入。 */}
       <div className={styles.header}>
         <p className={styles.brand}>{brand}</p>
         <PillButton
@@ -131,6 +144,6 @@ export function AuthCard({ titleId, state, actions }: AuthCardProps) {
           <SubmitButton label={copy.action} busy={busy} />
         </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }

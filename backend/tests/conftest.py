@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 import app.main as backend
 
 #跟 app/main.py 同一組連線設定，只是換一個資料庫
-DB = dict(user="root", password="12345678", host="localhost")
+DB = backend.DB
 TEST_DB = "login_mockup_test"
 
 SCHEMA = """

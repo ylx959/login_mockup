@@ -32,6 +32,12 @@ export const textVariants = {
   exit: { opacity: 0 },
 };
 
+/** 不淡入、不位移，從正中心向四邊揭露整份表單內容。 */
+export const contentRevealVariants: Variants = {
+  hidden: { clipPath: "inset(50% 50% 50% 50%)" },
+  visible: { clipPath: "inset(0% 0% 0% 0%)" },
+};
+
 /** 同一張玻璃卡片裡的畫面依序交接，退場完成後下一個畫面才淡入。 */
 export const screenVariants: Variants = {
   initial: {

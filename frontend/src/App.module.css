@@ -12,3 +12,14 @@
 .stage > * {
   grid-area: 1 / 1;
 }
+
+.screen {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+/* auth screen 內的 pill 與 panel 在 shared-layout 過程會短暫共存。 */
+.screen > * {
+  grid-area: 1 / 1;
+}

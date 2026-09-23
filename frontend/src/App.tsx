@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useId, useMemo } from "react";
+import { useId, useLayoutEffect, useMemo } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 
 import { AuthCard } from "~/components/AuthCard/AuthCard";
 import { Backdrop } from "~/components/Backdrop/Backdrop";
@@ -22,46 +23,63 @@ export function App({ client }: AppProps = {}) {
   const { state, actions } = useAuth(resolved);
   const titleId = useId();
   const reduced = useReducedMotion();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const activeScreenVariants = reduced ? instantScreenVariants : screenVariants;
+
+  useLayoutEffect(() => {
+    if (state.phase === "booting") return;
+
+    const target = state.phase === "welcome" ? "/member" : "/";
+    if (location.pathname !== target) navigate(target, { replace: true });
+  }, [location.pathname, navigate, state.phase]);
+
+  const authScreen =
+    state.phase === "booting" || state.phase === "welcome" ? null : (
+      <motion.div
+        className={styles.screen}
+        variants={activeScreenVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {/* 只有登入區的膠囊與卡片共用 layoutId。Member 是另一個 page。 */}
+        <AnimatePresence initial={false}>
+          {state.phase === "collapsed" ? (
+            <TouchPill key="pill" onOpen={actions.open} />
+          ) : (
+            <GlassPanel key="panel" labelledBy={titleId}>
+              <AuthCard titleId={titleId} state={state} actions={actions} />
+            </GlassPanel>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    );
+
+  const memberScreen =
+    state.phase === "welcome" ? (
+      <motion.div
+        className={styles.screen}
+        variants={activeScreenVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        <WelcomeCard titleId={titleId} state={state} actions={actions} />
+      </motion.div>
+    ) : null;
 
   return (
     <>
       <Backdrop />
       <main className={styles.stage}>
-        {/* 膠囊與卡片共用一個 layoutId，所以是同一塊材質原地長大。
-            這裡不能用 popLayout：它會把離場的膠囊抽成絕對定位，
-            跟 layoutId 的共享變形打架，看起來就會先跳位再展開。 */}
-        <AnimatePresence initial={false}>
-          {state.phase === "booting" ? null : state.phase === "collapsed" ? (
-            <TouchPill key="pill" onOpen={actions.open} />
-          ) : (
-            <GlassPanel key="panel" labelledBy={titleId}>
-              <AnimatePresence mode="wait" initial={false}>
-                {state.phase === "welcome" ? (
-                  <motion.div
-                    key="welcome"
-                    variants={activeScreenVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <WelcomeCard titleId={titleId} state={state} actions={actions} />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="form"
-                    variants={activeScreenVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <AuthCard titleId={titleId} state={state} actions={actions} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </GlassPanel>
-          )}
+        <AnimatePresence mode="wait" initial={false}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={authScreen} />
+            <Route path="/member" element={memberScreen} />
+            <Route path="*" element={null} />
+          </Routes>
         </AnimatePresence>
       </main>
     </>

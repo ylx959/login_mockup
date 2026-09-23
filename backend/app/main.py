@@ -1,24 +1,32 @@
 #準備與資料庫連線
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 import mysql.connector
-con=mysql.connector.connect(
-    user="root",
-    password="12345678",
-    host="localhost",
-    database="login_mockup"
+
+#帳密放在 backend/.env（不進 git），從哪個目錄啟動都讀得到
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+#連線設定只有這一份，測試也從這裡拿
+DB = dict(
+    user=os.environ["DB_USER"],
+    password=os.environ["DB_PASSWORD"],
+    host=os.environ["DB_HOST"],
+    port=int(os.environ.get("DB_PORT", 3306)),
 )
+
+con=mysql.connector.connect(**DB, database=os.environ["DB_NAME"])
 
 print("Database Ready")
 
-from fastapi import FastAPI, Request,Body,Response,status
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request,Response,status
 from starlette.middleware.sessions import SessionMiddleware
-import json
 from pwdlib import PasswordHash #密碼加密
 from pydantic import BaseModel, EmailStr, Field #email validator
 
 app=FastAPI()
-app.add_middleware(SessionMiddleware,secret_key="grgergg2")
+app.add_middleware(SessionMiddleware,secret_key=os.environ["SESSION_SECRET"])
 
 password_hash = PasswordHash.recommended()
 

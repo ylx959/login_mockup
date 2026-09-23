@@ -16,7 +16,7 @@ export function WelcomeCard({ titleId, state, actions }: WelcomeCardProps) {
   const error = state.error ? errorCopy[state.error] : null;
 
   return (
-    <>
+    <section className={styles.page} aria-labelledby={titleId}>
       <p className={styles.greeting}>{welcomeGreeting}</p>
       {/* 名字一律用文字節點寫入，不會被當成標記 */}
       <h1 className={styles.name} id={titleId}>
@@ -33,6 +33,6 @@ export function WelcomeCard({ titleId, state, actions }: WelcomeCardProps) {
           {busy ? signingOutLabel : signOutLabel}
         </PillButton>
       </div>
-    </>
+    </section>
   );
 }
