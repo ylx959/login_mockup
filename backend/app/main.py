@@ -50,7 +50,7 @@ class LoginRequest(BaseModel):
 
     password: str = Field(min_length=1, max_length=128)
 
-
+#註冊
 @app.post("/api/member")
 def signup(request:Request,response:Response,body: SignupRequest):
 
