@@ -17,8 +17,9 @@ const paths: Record<IconGlyph, React.ReactNode> = {
   ),
   key: (
     <>
-      <circle cx="8.4" cy="8.4" r="3.9" />
-      <path d="M11.2 11.2 20 20M17 17l-2 2M20 14l-2 2" />
+      <circle cx="7.5" cy="16.5" r="4.5" />
+      <circle cx="7.5" cy="16.5" r="1" />
+      <path d="M10.7 13.3 20 4M17 7l2.5 2.5M14.5 9.5l2 2" />
     </>
   ),
   chevronRight: <path d="M10 7l5 5-5 5" />,
