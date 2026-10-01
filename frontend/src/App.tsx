@@ -1,12 +1,12 @@
 import { useId, useLayoutEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
 
-import { Backdrop } from "@/components/layout/Backdrop";
+import { Backdrop } from "@/components/Backdrop";
 import { createAuthClient, type AuthClient } from "@/features/auth/api";
 import { useAuth } from "@/features/auth/hooks";
 import { AppRouter } from "@/router";
 
-import styles from "@/styles/App.module.css";
+import styles from "./App.module.css";
 
 export type AppProps = {
   /** 測試可以換掉 adapter，正式執行時走預設的 HTTP client。 */

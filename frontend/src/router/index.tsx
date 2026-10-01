@@ -3,8 +3,8 @@ import { Route, Routes, useLocation } from "react-router";
 
 import type { AuthActions } from "@/features/auth/hooks";
 import type { AuthState } from "@/features/auth/machine";
-import { Login } from "@/pages/Login/Login";
-import { Member } from "@/pages/Member/Member";
+import { Login } from "@/pages/Login";
+import { Member } from "@/pages/Member";
 
 export type AppRouterProps = {
   titleId: string;

@@ -4,7 +4,7 @@
  */
 
 import { validationCopy } from "@/data/copy";
-import type { FieldName } from "@/data/fields";
+import type { FieldName } from "./fields";
 
 import type { AuthMode } from "@/features/auth/machine";
 import type { Registration } from "@/features/auth/types";

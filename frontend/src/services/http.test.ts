@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { requestJson, type FetchLike } from "@/services/http";
+import { requestJson, type FetchLike } from "./http";
 
 const respond = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {

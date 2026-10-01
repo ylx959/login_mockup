@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { FetchLike } from "@/services/http";
 
-import { createAuthClient } from "@/features/auth/api";
+import { createAuthClient } from "./api";
 
 const MEMBER = { name: "Annie Lin", email: "annie@example.com" };
 const respond = (body: unknown, status = 200) =>

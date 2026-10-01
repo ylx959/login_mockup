@@ -2,7 +2,7 @@
 
 import type { AuthMode } from "@/features/auth/machine";
 
-import type { IconName } from "@/components/ui/Icon";
+import type { IconName } from "@/components/Icon";
 import { modeCopy } from "@/data/copy";
 
 export type FieldName = "name" | "email" | "password";

@@ -1,7 +1,7 @@
-import { Screen } from "@/components/layout/Screen";
+import { Screen } from "@/components/Screen";
 import type { AuthState } from "@/features/auth/machine";
 import type { AuthActions } from "@/features/auth/hooks";
-import { WelcomeCard } from "@/components/common/WelcomeCard";
+import { WelcomeCard } from "@/components/WelcomeCard";
 
 export type MemberProps = {
   titleId: string;

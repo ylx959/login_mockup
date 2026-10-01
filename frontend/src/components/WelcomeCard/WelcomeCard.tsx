@@ -1,9 +1,9 @@
-import { PillButton } from "@/components/ui/PillButton";
+import { PillButton } from "@/components/PillButton";
 import { errorCopy, signingOutLabel, signOutLabel, welcomeGreeting } from "@/data/copy";
 import type { AuthState } from "@/features/auth/machine";
 import type { AuthActions } from "@/features/auth/hooks";
 
-import styles from "@/styles/WelcomeCard.module.css";
+import styles from "./WelcomeCard.module.css";
 
 export type WelcomeCardProps = {
   titleId: string;

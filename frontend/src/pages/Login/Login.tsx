@@ -1,11 +1,11 @@
 import { AnimatePresence } from "motion/react";
 
-import { GlassPanel } from "@/components/ui/GlassPanel";
-import { Screen } from "@/components/layout/Screen";
+import { GlassPanel } from "@/components/GlassPanel";
+import { Screen } from "@/components/Screen";
 import type { AuthState } from "@/features/auth/machine";
 import type { AuthActions } from "@/features/auth/hooks";
-import { AuthCard } from "@/components/common/AuthCard";
-import { TouchPill } from "@/components/common/TouchPill";
+import { AuthCard } from "@/components/AuthCard";
+import { TouchPill } from "@/components/TouchPill";
 
 export type LoginProps = {
   titleId: string;

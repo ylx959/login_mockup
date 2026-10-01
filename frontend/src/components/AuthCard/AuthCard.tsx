@@ -6,11 +6,11 @@ import {
 } from "motion/react";
 import { useState } from "react";
 
-import { Field } from "@/components/ui/Field";
-import { PillButton } from "@/components/ui/PillButton";
-import { SubmitButton } from "@/components/ui/SubmitButton";
+import { Field } from "./components/Field";
+import { PillButton } from "@/components/PillButton";
+import { SubmitButton } from "./components/SubmitButton";
 import { brand, errorCopy, modeCopy } from "@/data/copy";
-import { fieldsFor, type FieldName } from "@/data/fields";
+import { fieldsFor, type FieldName } from "./lib/fields";
 import type { AuthMode, AuthState } from "@/features/auth/machine";
 import type { AuthActions } from "@/features/auth/hooks";
 import {
@@ -20,9 +20,9 @@ import {
   shellSpring,
   textVariants,
 } from "@/lib/motion";
-import { hasErrors, validate, type FieldErrors } from "@/features/auth/validate";
+import { hasErrors, validate, type FieldErrors } from "./lib/validate";
 
-import styles from "@/styles/AuthCard.module.css";
+import styles from "./AuthCard.module.css";
 
 const EMPTY = { name: "", email: "", password: "" };
 
